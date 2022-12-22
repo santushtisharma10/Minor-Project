@@ -48,20 +48,14 @@ function App() {
         <TabContext value={value}>
           <Box mb={3} sx={{width: '100%'}}>
             <Tabs value={value} onChange={handleChange} variant="fullWidth">
-              <Tab value="1" label="Individual User" />
-              <Tab value="2" label="Corporate Data" />
+              <Tab value="1" label="Corporate Data" />
+              <Tab value="2" label="Individual User" />
             </Tabs>
           </Box>
-          <TabPanel value="1"><UserForm /></TabPanel>
-          <TabPanel value="2"><CorporateForm /></TabPanel>
+          <TabPanel value="1"><CorporateForm /></TabPanel>
+          <TabPanel value="2"><UserForm /></TabPanel>
         </TabContext>
       </CustomBox>
-
-      {/* take user type as input and render form according to user type */}
-      {/* user form */}
-      {/* corporate form */}
-      {/* after filling the form take it to results page and show the results rendered by flask api */}
-      {/* react redux and routing */}
     </Page>
   );
 }
