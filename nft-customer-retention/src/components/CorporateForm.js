@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
 import { CloudCircleOutlined as UploadIcon } from "@mui/icons-material";
-import { styled, Box, CircularProgress } from "@mui/material";
+import { styled, Box, CircularProgress, Dialog, Typography } from "@mui/material";
 
 const UploadBox = styled(Box)(({ theme }) => ({
   border: `0.15rem dashed ${theme.palette.grey[400]}`,
@@ -35,6 +35,7 @@ const SubmitButton = styled(LoadingButton)({
 
 function CorporateForm() {
   const [isSubmitting, setSubmitting] = useState(false);
+  const [open, setOpen] = useState(false)
   const defaultValues = {
     file: null,
   };
@@ -56,6 +57,10 @@ function CorporateForm() {
  a.download = "data.csv";
  document.body.appendChild(a);
  a.click();
+  }
+
+  const handleClose = () => {
+    setOpen(!open)
   }
 
   const schema = Yup.object()
@@ -89,8 +94,8 @@ function CorporateForm() {
       setSubmitting(true);
       setTimeout(() => {
         setSubmitting(false);
+        setOpen(!open)
         console.log("Submitted");
-        console.log(register);
       }, 2000);
     } catch (error) {
       console.log("error");
@@ -99,7 +104,7 @@ function CorporateForm() {
   };
 
   return (
-    <div style={{ p: 16 }}>
+    <div style={{ p: 16, borderRadius: 8 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <UploadBox sx={{ mb: 4 }}>
           <Box
@@ -134,9 +139,14 @@ function CorporateForm() {
           Submit Details
         </SubmitButton>
         <SubmitButton variant="outlined" onClick={downloadFile} sx={{mt: 2}}>
-          Download File
+          Download Format
         </SubmitButton>
       </form>
+      <Dialog open={open} onClose={handleClose}>
+        <Box sx={{p: 16}}>
+        <Typography variant="h3" color='green'>SUCCESS</Typography>
+        </Box>
+      </Dialog>
     </div>
   );
 }
