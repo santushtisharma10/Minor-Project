@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-// import { Button, styled, CircularProgress } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { CloudCircleOutlined as UploadIcon } from "@mui/icons-material";
-
-// @mui
 import { styled, Box, CircularProgress } from "@mui/material";
 
 const UploadBox = styled(Box)(({ theme }) => ({
@@ -23,12 +20,6 @@ const BrowseButton = styled("input")(({ theme }) => ({
     color: theme.palette.grey[900],
   },
 }));
-
-const schema = Yup.object()
-  .shape({
-    file: Yup.mixed().required("File is required"),
-  })
-  .required();
 
 const Error = styled("p")({
   fontSize: "12px",
@@ -48,6 +39,37 @@ function CorporateForm() {
     file: null,
   };
 
+  const FIELDS = ["Customer_ID", 	"Gender", "Age", "Married",	"Dependents",	"Education",	"Self_Employed",	"Total_Income",	"Start_Year",	"Amount_Invested",	"Credit_History",	"Region",	"Likely_to_retain"];
+
+  const SUPPORTED_FORMATS = [
+    ".csv",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-excel",
+  ];
+
+  const downloadFile = () => {
+    var blob = new Blob([FIELDS], {type: 'application/vnd.ms-excel'});
+ var downloadUrl = URL.createObjectURL(blob);
+ var a = document.createElement("a");
+ a.style.display = "none"
+ a.href = downloadUrl;
+ a.download = "data.csv";
+ document.body.appendChild(a);
+ a.click();
+  }
+
+  const schema = Yup.object()
+    .shape({
+      file: Yup.mixed().test(
+        "fileType",
+        "File is Required",
+        (value) =>
+          SUPPORTED_FORMATS.includes(value) ||
+          (value !== null && value.length > 0)
+      ),
+    })
+    .required();
+
   const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues,
@@ -62,11 +84,13 @@ function CorporateForm() {
   } = methods;
 
   const onSubmit = (data) => {
-    setSubmitting(true);
+    console.log(data);
     try {
+      setSubmitting(true);
       setTimeout(() => {
         setSubmitting(false);
         console.log("Submitted");
+        console.log(register);
       }, 2000);
     } catch (error) {
       console.log("error");
@@ -78,22 +102,22 @@ function CorporateForm() {
     <div style={{ p: 16 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <UploadBox sx={{ mb: 4 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <UploadIcon />
-                <BrowseButton
-                  {...register("file")}
-                  name="file"
-                  type="file"
-                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                />
-              </Box>
-              <Error>{errors.file?.message}</Error>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <UploadIcon />
+            <BrowseButton
+              {...register("file")}
+              name="file"
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            />
+          </Box>
+          <Error>{errors.file?.message}</Error>
         </UploadBox>
 
         <SubmitButton
@@ -107,8 +131,10 @@ function CorporateForm() {
           }
           loading={isSubmitting}
         >
-          {" "}
-          Submit Data{" "}
+          Submit Details
+        </SubmitButton>
+        <SubmitButton variant="outlined" onClick={downloadFile} sx={{mt: 2}}>
+          Download File
         </SubmitButton>
       </form>
     </div>
