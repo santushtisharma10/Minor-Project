@@ -5,6 +5,8 @@ import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
 import { CloudCircleOutlined as UploadIcon } from "@mui/icons-material";
 import { styled, Box, CircularProgress, Dialog, Typography } from "@mui/material";
+import Confetti from "react-confetti";
+
 
 const UploadBox = styled(Box)(({ theme }) => ({
   border: `0.15rem dashed ${theme.palette.grey[400]}`,
@@ -142,6 +144,8 @@ function CorporateForm() {
           Download Format
         </SubmitButton>
       </form>
+      {open && <Confetti width={window.innerWidth} height={window.innerHeight} />}
+
       <Dialog open={open} onClose={handleClose}>
         <Box sx={{p: 16}}>
         <Typography variant="h3" color='green'>SUCCESS</Typography>
